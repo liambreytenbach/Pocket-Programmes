@@ -15,8 +15,8 @@
     textarea::-webkit-scrollbar { width: 10px; }
     textarea::-webkit-scrollbar-track { background: #182234; border-radius:6px;}
     textarea::-webkit-scrollbar-thumb { background: #555; border-radius:6px;}
-    button, a.button-link{
-      padding:10px 20px;
+    .button-link, .download-btn{
+      padding:10px;
       border:none;
       border-radius:8px;
       background:#60a5fa;
@@ -26,7 +26,10 @@
       text-decoration:none;
       display:inline-block;
       text-align:center;
-      width:150px;
+      width:180px;
+      height:44px;
+      line-height:24px;
+      font-size:16px;
     }
     #result{margin-top:20px;text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px;}
     .qr-border{background:#fff; display:inline-block; padding:8px; border-radius:12px;}
@@ -142,14 +145,14 @@ Smoking: Smoking on stage</textarea>
       let htmlContent = `<!doctype html><html><head><meta charset="utf-8"><title>Pocket Programmes</title>
 <style>body{font-family:Arial,sans-serif;background:#0f1724;color:#e6eef6;padding:20px}h1{font-size:24px}pre{white-space:pre-wrap;word-wrap:break-word}</style></head><body>
 <h1>${data.playName} – Theatre Programme</h1><pre>`;
-      htmlContent += `============================\nTheatre Programme: ${data.playName}\n============================\n\n`;
-      htmlContent += `Venue Details:\n--------------\nTheatre: ${data.theatre}\nAddress: ${data.address}\nWebsite: ${data.website}\n\n`;
-      htmlContent += `Performance Dates:\n------------------\nRun Dates: ${data.rundates}\nDate: ${data.exactDate}\nTime: ${data.exactTime}\nSchedule:\n${data.schedule}\nRunning Time: ${data.runtime}\nAge Guidance: ${data.age}\nTicket Prices: ${data.tickets}\nSmoking: ${data.smoking}\n\n`;
-      htmlContent += `About the Play:\n---------------\n${data.about}\n\n`;
-      htmlContent += `Cast & Creative Team:\n--------------------\nDirector: ${data.director}\nCast:\n${data.cast}\n\n`;
-      htmlContent += `Synopsis:\n---------\n${data.synopsis}\n\n`;
-      htmlContent += `Booking Information:\n-------------------\n${data.booking}\n\n`;
-      htmlContent += `Additional Information:\n---------------------\n${data.resources}\n`;
+      htmlContent += `================================\nTheatre Programme: ${data.playName}\n=================================\n\n`;
+      htmlContent += `Venue Details:\n---------------------------\nTheatre: ${data.theatre}\nAddress: ${data.address}\nWebsite: ${data.website}\n\n`;
+      htmlContent += `Performance Dates:\n---------------------------\nRun Dates: ${data.rundates}\nDate: ${data.exactDate}\nTime: ${data.exactTime}\nSchedule:\n${data.schedule}\nRunning Time: ${data.runtime}\nAge Guidance: ${data.age}\nTicket Prices: ${data.tickets}\nSmoking: ${data.smoking}\n\n`;
+      htmlContent += `About the Play:\n---------------------------\n${data.about}\n\n`;
+      htmlContent += `Cast & Creative Team:\n---------------------------\nDirector: ${data.director}\nCast:\n${data.cast}\n\n`;
+      htmlContent += `Synopsis:\n---------------------------\n${data.synopsis}\n\n`;
+      htmlContent += `Booking Information:\n---------------------------\n${data.booking}\n\n`;
+      htmlContent += `Additional Information:\n---------------------------\n${data.resources}\n`;
       htmlContent += `</pre></body></html>`;
 
       const pageFilename = `${sanitize(data.playName)}_${sanitize(data.theatre)}.html`;
@@ -180,12 +183,13 @@ Smoking: Smoking on stage</textarea>
       downloadLink.href = pageUrl;
       downloadLink.download = pageFilename;
       downloadLink.textContent = 'Download Programme Page';
-      downloadLink.className = 'button-link';
+      downloadLink.className = 'button-link download-btn';
       btnRow.appendChild(downloadLink);
 
       // Download QR Code button
       const qrDownloadBtn = document.createElement('button');
       qrDownloadBtn.textContent = 'Download QR Code';
+      qrDownloadBtn.className = 'download-btn';
       qrDownloadBtn.addEventListener('click', () => {
         const qrImg = qrDiv.querySelector('img');
         if(qrImg){
@@ -199,4 +203,3 @@ Smoking: Smoking on stage</textarea>
     });
   </script>
 </body>
-</html>
