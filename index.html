@@ -12,57 +12,87 @@
     label{display:block;margin-top:12px;margin-bottom:4px;font-size:14px}
     input,textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#0b1220;color:#fff}
     textarea{min-height:60px}
-    button{margin-top:16px;padding:10px 14px;border:none;border-radius:8px;background:#60a5fa;color:#04263b;cursor:pointer;font-weight:bold}
-    #result{margin-top:20px;text-align:center}
-    .qr-border{padding:8px;background:#fff;display:inline-block;border-radius:8px;}
+    button, a.button-link{
+      margin-top:0;
+      padding:10px 20px;
+      border:none;
+      border-radius:8px;
+      background:#60a5fa;
+      color:#04263b;
+      cursor:pointer;
+      font-weight:bold;
+      text-decoration:none;
+      display:inline-block;
+      text-align:center;
+    }
+    #result{margin-top:20px;text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px;}
+    .qr-border{background:#fff; display:inline-block; padding:8px; border-radius:12px;}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Form</h1>
+    <h1>Pocket Programme Form</h1>
     <div class="card">
       <label>Play Name</label>
-      <input id="playName" type="text" value="The Weir" />
+      <input id="playName" type="text" placeholder="Enter Play Name" />
 
       <label>Theatre</label>
       <input id="theatre" type="text" value="Harold Pinter Theatre" />
+
       <label>Address</label>
       <input id="address" type="text" value="6 Panton Street, London, SW1Y 4DN" />
+
       <label>Website</label>
       <input id="website" type="text" value="https://www.haroldpintertheatre.co.uk/" />
+
       <label>Run Dates</label>
       <input id="rundates" type="text" value="11 September – 6 December 2025" />
+
+      <label>Exact Date and Time</label>
+      <input id="exactDateTime" type="text" placeholder="Enter exact date and time" />
+
       <label>Schedule</label>
       <textarea id="schedule">- Monday to Saturday: 7:30 PM
 - Saturday Matinee: 2:30 PM
 - Sunday: Dark</textarea>
+
       <label>Running Time</label>
       <input id="runtime" type="text" value="1 hour 45 minutes (no interval)" />
+
       <label>Age Guidance</label>
       <input id="age" type="text" value="12+" />
+
       <label>Ticket Prices</label>
       <input id="tickets" type="text" value="From £20 (subject to a £3.95 transaction fee)" />
+
       <label>Smoking</label>
       <input id="smoking" type="text" value="Smoking on stage" />
+
       <label>About the Play</label>
       <textarea id="about">"The Weir" is a modern Irish classic by Conor McPherson, first performed in 1997. 
 Set in a rural Irish pub, the play unfolds as locals share ghost stories, leading to a revelation that changes their lives forever.</textarea>
+
       <label>Director</label>
       <input id="director" type="text" value="Conor McPherson" />
+
       <label>Cast</label>
       <textarea id="cast">- Brendan Gleeson as Jack
 - Owen McDonnell as Brendan
 - Seán McGinley as Jim
 - Kate Phillips as Valerie
 - Tom Vaughan-Lawlor as Finbar</textarea>
+
       <label>Synopsis</label>
       <textarea id="synopsis">On a stormy night in a remote Irish pub, four men gather to share stories. 
 When Valerie, a newcomer, joins them, their tales take a supernatural turn, 
 leading to an unexpected and haunting revelation.</textarea>
+
       <label>Booking Information</label>
-      <textarea id="booking">Ticket Price: From £20
+      <textarea id="booking">Official Box Office: https://www.haroldpintertheatre.co.uk/shows/the-weir
+Ticket Price: From £20
 Age Guidance: 12+
 Smoking: Smoking on stage</textarea>
+
       <label>Additional Information</label>
       <textarea id="resources"></textarea>
 
@@ -73,119 +103,83 @@ Smoking: Smoking on stage</textarea>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
+    function sanitize(str){
+      return str.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+    }
+
     const generateBtn = document.getElementById('generate');
     const resultDiv = document.getElementById('result');
 
     generateBtn.addEventListener('click', () => {
       const data = {
-        playName: document.getElementById('playName').value.trim(),
-        theatre: document.getElementById('theatre').value.trim(),
-        address: document.getElementById('address').value.trim(),
-        website: document.getElementById('website').value.trim(),
-        rundates: document.getElementById('rundates').value.trim(),
-        schedule: document.getElementById('schedule').value.trim(),
-        runtime: document.getElementById('runtime').value.trim(),
-        age: document.getElementById('age').value.trim(),
-        tickets: document.getElementById('tickets').value.trim(),
-        smoking: document.getElementById('smoking').value.trim(),
-        about: document.getElementById('about').value.trim(),
-        director: document.getElementById('director').value.trim(),
-        cast: document.getElementById('cast').value.trim(),
-        synopsis: document.getElementById('synopsis').value.trim(),
-        booking: document.getElementById('booking').value.trim()
+        playName: document.getElementById('playName').value || "Play",
+        theatre: document.getElementById('theatre').value,
+        address: document.getElementById('address').value,
+        website: document.getElementById('website').value,
+        rundates: document.getElementById('rundates').value,
+        exactDateTime: document.getElementById('exactDateTime').value,
+        schedule: document.getElementById('schedule').value,
+        runtime: document.getElementById('runtime').value,
+        age: document.getElementById('age').value,
+        tickets: document.getElementById('tickets').value,
+        smoking: document.getElementById('smoking').value,
+        about: document.getElementById('about').value,
+        director: document.getElementById('director').value,
+        cast: document.getElementById('cast').value,
+        synopsis: document.getElementById('synopsis').value,
+        booking: document.getElementById('booking').value,
+        resources: document.getElementById('resources').value
       };
 
-      const sanitize = str => str.replace(/[^\w\-]/g, '_');
+      let htmlContent = `<!doctype html><html><head><meta charset="utf-8"><title>Pocket Programmes</title>
+<style>body{font-family:Arial,sans-serif;background:#0f1724;color:#e6eef6;padding:20px}h1{font-size:24px}pre{white-space:pre-wrap;word-wrap:break-word}</style></head><body>
+<h1>${data.playName} – Theatre Programme</h1><pre>`;
+      htmlContent += `============================\nTheatre Programme: ${data.playName}\n============================\n\n`;
+      htmlContent += `Venue Details:\n--------------\nTheatre: ${data.theatre}\nAddress: ${data.address}\nWebsite: ${data.website}\n\n`;
+      htmlContent += `Performance Dates:\n------------------\nRun Dates: ${data.rundates}\nExact Date & Time: ${data.exactDateTime}\nSchedule:\n${data.schedule}\nRunning Time: ${data.runtime}\nAge Guidance: ${data.age}\nTicket Prices: ${data.tickets}\nSmoking: ${data.smoking}\n\n`;
+      htmlContent += `About the Play:\n---------------\n${data.about}\n\n`;
+      htmlContent += `Cast & Creative Team:\n--------------------\nDirector: ${data.director}\nCast:\n${data.cast}\n\n`;
+      htmlContent += `Synopsis:\n---------\n${data.synopsis}\n\n`;
+      htmlContent += `Booking Information:\n-------------------\n${data.booking}\n\n`;
+      htmlContent += `Additional Information:\n---------------------\n${data.resources}\n`;
+      htmlContent += `</pre></body></html>`;
+
       const pageFilename = `${sanitize(data.playName)}_${sanitize(data.theatre)}.html`;
       const githubPagesUrl = `https://liambreytenbach.github.io/Pocket-Programmes/programmes/${pageFilename}`;
 
-      let htmlContent = `<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>${data.playName} – ${data.theatre} Programme</title>
-<style>body{font-family:Arial,sans-serif;background:#0f1724;color:#e6eef6;padding:20px}h1{font-size:24px}pre{white-space:pre-wrap;word-wrap:break-word}</style>
-</head>
-<body>
-<h1>${data.playName} – ${data.theatre} Programme</h1>
-<pre>
-============================
-Theatre Programme: ${data.playName}
-============================
-
-Venue Details:
---------------
-Theatre: ${data.theatre}
-Address: ${data.address}
-Website: ${data.website}
-
-Performance Dates:
-------------------
-Run Dates: ${data.rundates}
-Schedule:
-${data.schedule}
-Running Time: ${data.runtime}
-Age Guidance: ${data.age}
-Ticket Prices: ${data.tickets}
-Smoking: ${data.smoking}
-
-About the Play:
----------------
-${data.about}
-
-Cast & Creative Team:
---------------------
-Director: ${data.director}
-Cast:
-${data.cast}
-
-Synopsis:
----------
-${data.synopsis}
-
-Booking Information:
--------------------
-${data.booking}
-
-Additional Information:
----------------------
-</pre>
-</body>
-</html>`;
-
-      // Blob for download
       const pageBlob = new Blob([htmlContent], { type: 'text/html' });
       const pageUrl = URL.createObjectURL(pageBlob);
 
-      // Clear previous results
       resultDiv.innerHTML = '';
 
-      // Create download link
+      const btnContainer = document.createElement('div');
+      btnContainer.style.display = 'flex';
+      btnContainer.style.flexDirection = 'column';
+      btnContainer.style.alignItems = 'center';
+      btnContainer.style.gap = '12px';
+      resultDiv.appendChild(btnContainer);
+
+      // Download Programme Page button
       const downloadLink = document.createElement('a');
       downloadLink.href = pageUrl;
       downloadLink.download = pageFilename;
-      downloadLink.textContent = `Download Programme Page (${pageFilename})`;
-      downloadLink.style.display = 'inline-block';
-      downloadLink.style.marginTop = '12px';
-      downloadLink.style.color = '#60a5fa';
-      resultDiv.appendChild(downloadLink);
+      downloadLink.textContent = 'Download Programme Page';
+      downloadLink.className = 'button-link';
+      btnContainer.appendChild(downloadLink);
 
-      // Generate QR code
+      // QR code container
       const qrDiv = document.createElement('div');
       qrDiv.className = 'qr-border';
-      qrDiv.style.marginTop = '20px';
-      resultDiv.appendChild(qrDiv);
+      btnContainer.appendChild(qrDiv);
       const qr = new QRCode(qrDiv, {
         text: githubPagesUrl,
         width: 220,
         height: 220
       });
 
-      // QR code download button
+      // Download QR code button
       const qrDownloadBtn = document.createElement('button');
       qrDownloadBtn.textContent = 'Download QR Code';
-      qrDownloadBtn.style.display = 'block';
-      qrDownloadBtn.style.margin = '12px auto';
       qrDownloadBtn.addEventListener('click', () => {
         const qrImg = qrDiv.querySelector('img');
         if(qrImg){
@@ -195,7 +189,7 @@ Additional Information:
           link.click();
         }
       });
-      resultDiv.appendChild(qrDownloadBtn);
+      btnContainer.appendChild(qrDownloadBtn);
     });
   </script>
 </body>
