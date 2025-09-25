@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>The Weir Programme → QR</title>
+  <title>Pocket Programme Form</title>
   <style>
     body{font-family:Arial, sans-serif; margin:0; min-height:100vh; background:#0f1724; color:#e6eef6}
     .wrap{max-width:800px;margin:28px auto;padding:20px}
@@ -18,9 +18,12 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>The Weir – Theatre Programme Form</h1>
+    <h1>Pocket Programme Form</h1>
     <div class="card">
-      <!-- Form Fields Same as Before -->
+      <!-- Play Name Field -->
+      <label>Play Name</label>
+      <input id="playName" type="text" value="The Weir" />
+
       <label>Theatre</label>
       <input id="theatre" type="text" value="Harold Pinter Theatre" />
       <label>Address</label>
@@ -78,65 +81,113 @@ Smoking: Smoking on stage</textarea>
 
     generateBtn.addEventListener('click', () => {
       const data = {
-        theatre: document.getElementById('theatre').value,
-        address: document.getElementById('address').value,
-        website: document.getElementById('website').value,
-        boxoffice: document.getElementById('boxoffice').value,
-        rundates: document.getElementById('rundates').value,
-        schedule: document.getElementById('schedule').value,
-        runtime: document.getElementById('runtime').value,
-        age: document.getElementById('age').value,
-        tickets: document.getElementById('tickets').value,
-        smoking: document.getElementById('smoking').value,
-        about: document.getElementById('about').value,
-        director: document.getElementById('director').value,
-        cast: document.getElementById('cast').value,
-        synopsis: document.getElementById('synopsis').value,
-        booking: document.getElementById('booking').value,
-        resources: document.getElementById('resources').value
+        playName: document.getElementById('playName').value.trim(),
+        theatre: document.getElementById('theatre').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        website: document.getElementById('website').value.trim(),
+        boxoffice: document.getElementById('boxoffice').value.trim(),
+        rundates: document.getElementById('rundates').value.trim(),
+        schedule: document.getElementById('schedule').value.trim(),
+        runtime: document.getElementById('runtime').value.trim(),
+        age: document.getElementById('age').value.trim(),
+        tickets: document.getElementById('tickets').value.trim(),
+        smoking: document.getElementById('smoking').value.trim(),
+        about: document.getElementById('about').value.trim(),
+        director: document.getElementById('director').value.trim(),
+        cast: document.getElementById('cast').value.trim(),
+        synopsis: document.getElementById('synopsis').value.trim(),
+        booking: document.getElementById('booking').value.trim(),
+        resources: document.getElementById('resources').value.trim()
       };
 
-      // Build HTML content for new page
-      let htmlContent = `<!doctype html><html><head><meta charset="utf-8"><title>The Weir Programme</title><style>body{font-family:Arial,sans-serif;background:#0f1724;color:#e6eef6;padding:20px}h1{font-size:24px}pre{white-space:pre-wrap;word-wrap:break-word}</style></head><body><h1>The Weir – Theatre Programme</h1><pre>`;
-      htmlContent += `============================\nTheatre Programme: The Weir\n============================\n\n`;
-      htmlContent += `Venue Details:\n--------------\nTheatre: ${data.theatre}\nAddress: ${data.address}\nWebsite: ${data.website}\nBox Office: ${data.boxoffice}\n\n`;
-      htmlContent += `Performance Dates:\n------------------\nRun Dates: ${data.rundates}\nSchedule:\n${data.schedule}\nRunning Time: ${data.runtime}\nAge Guidance: ${data.age}\nTicket Prices: ${data.tickets}\nSmoking: ${data.smoking}\n\n`;
-      htmlContent += `About the Play:\n---------------\n${data.about}\n\n`;
-      htmlContent += `Cast & Creative Team:\n--------------------\nDirector: ${data.director}\nCast:\n${data.cast}\n\n`;
-      htmlContent += `Synopsis:\n---------\n${data.synopsis}\n\n`;
-      htmlContent += `Booking Information:\n-------------------\n${data.booking}\n\n`;
-      htmlContent += `Additional Resources:\n---------------------\n${data.resources}\n`;
-      htmlContent += `</pre></body></html>`;
+      // Sanitize filename
+      const sanitize = str => str.replace(/[^\w\-]/g, '_');
+      const pageFilename = `${sanitize(data.playName)}_${sanitize(data.theatre)}.html`;
+      const githubPagesUrl = `https://liambreytenbach.github.io/Pocket-Programmes/programmes/${pageFilename}`;
 
-      const pageFilename = 'page1.html'; // Assign a unique filename
-const githubPagesUrl = `https://liambreytenbach.github.io/Pocket-Programmes/programmes/${pageFilename}`;
+      // Build HTML content
+      let htmlContent = `<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>${data.playName} – ${data.theatre} Programme</title>
+<style>body{font-family:Arial,sans-serif;background:#0f1724;color:#e6eef6;padding:20px}h1{font-size:24px}pre{white-space:pre-wrap;word-wrap:break-word}</style>
+</head>
+<body>
+<h1>${data.playName} – ${data.theatre} Programme</h1>
+<pre>
+============================
+Theatre Programme: ${data.playName}
+============================
 
-// Create a Blob for download
-const pageBlob = new Blob([htmlContent], { type: 'text/html' });
-const pageUrl = URL.createObjectURL(pageBlob);
+Venue Details:
+--------------
+Theatre: ${data.theatre}
+Address: ${data.address}
+Website: ${data.website}
+Box Office: ${data.boxoffice}
 
-// Clear previous results
-resultDiv.innerHTML = '';
+Performance Dates:
+------------------
+Run Dates: ${data.rundates}
+Schedule:
+${data.schedule}
+Running Time: ${data.runtime}
+Age Guidance: ${data.age}
+Ticket Prices: ${data.tickets}
+Smoking: ${data.smoking}
 
-// Create download link for local download
-const downloadLink = document.createElement('a');
-downloadLink.href = pageUrl;
-downloadLink.download = pageFilename;
-downloadLink.textContent = 'Download Programme Page (HTML)';
-downloadLink.style.display = 'inline-block';
-downloadLink.style.marginTop = '12px';
-downloadLink.style.color = '#60a5fa';
-resultDiv.appendChild(downloadLink);
+About the Play:
+---------------
+${data.about}
 
-// Generate QR code pointing to GitHub Pages hosted page
-const qrDiv = document.createElement('div');
-qrDiv.style.marginTop = '20px';
-resultDiv.appendChild(qrDiv);
-new QRCode(qrDiv, {
-  text: githubPagesUrl,
-  width: 220,
-  height: 220
-});
+Cast & Creative Team:
+--------------------
+Director: ${data.director}
+Cast:
+${data.cast}
+
+Synopsis:
+---------
+${data.synopsis}
+
+Booking Information:
+-------------------
+${data.booking}
+
+Additional Resources:
+---------------------
+${data.resources}
+</pre>
+</body>
+</html>`;
+
+      // Create a Blob for download
+      const pageBlob = new Blob([htmlContent], { type: 'text/html' });
+      const pageUrl = URL.createObjectURL(pageBlob);
+
+      // Clear previous results
+      resultDiv.innerHTML = '';
+
+      // Create download link
+      const downloadLink = document.createElement('a');
+      downloadLink.href = pageUrl;
+      downloadLink.download = pageFilename;
+      downloadLink.textContent = `Download Programme Page (${pageFilename})`;
+      downloadLink.style.display = 'inline-block';
+      downloadLink.style.marginTop = '12px';
+      downloadLink.style.color = '#60a5fa';
+      resultDiv.appendChild(downloadLink);
+
+      // Generate QR code pointing to GitHub Pages URL
+      const qrDiv = document.createElement('div');
+      qrDiv.style.marginTop = '20px';
+      resultDiv.appendChild(qrDiv);
+      new QRCode(qrDiv, {
+        text: githubPagesUrl,
+        width: 220,
+        height: 220
+      });
     });
   </script>
 </body>
