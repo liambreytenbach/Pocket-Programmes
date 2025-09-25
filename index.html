@@ -108,29 +108,35 @@ Smoking: Smoking on stage</textarea>
       htmlContent += `Additional Resources:\n---------------------\n${data.resources}\n`;
       htmlContent += `</pre></body></html>`;
 
-      // Create blob URL for new page
-      const pageBlob = new Blob([htmlContent], { type: 'text/html' });
-      const pageUrl = URL.createObjectURL(pageBlob);
+      const pageFilename = 'page1.html'; // Assign a unique filename
+const githubPagesUrl = `https://liambreytenbach.github.io/Pocket-Programmes/programmes/${pageFilename}`;
 
-      // Create download link
-      const downloadLink = document.createElement('a');
-      downloadLink.href = pageUrl;
-      downloadLink.download = 'the-weir-programme.html';
-      downloadLink.textContent = 'Download Programme Page';
-      downloadLink.style.display = 'inline-block';
-      downloadLink.style.marginTop = '12px';
-      downloadLink.style.color = '#60a5fa';
-      resultDiv.appendChild(downloadLink);
+// Create a Blob for download
+const pageBlob = new Blob([htmlContent], { type: 'text/html' });
+const pageUrl = URL.createObjectURL(pageBlob);
 
-      // Generate QR code linking to GitHub Pages URL
-      const qrDiv = document.createElement('div');
-      qrDiv.style.marginTop = '20px';
-      resultDiv.appendChild(qrDiv);
-      new QRCode(qrDiv, {
-        text: 'https://liambreytenbach.github.io/Pocket-Programmes/',
-        width: 220,
-        height: 220
-      });
+// Clear previous results
+resultDiv.innerHTML = '';
+
+// Create download link for local download
+const downloadLink = document.createElement('a');
+downloadLink.href = pageUrl;
+downloadLink.download = pageFilename;
+downloadLink.textContent = 'Download Programme Page (HTML)';
+downloadLink.style.display = 'inline-block';
+downloadLink.style.marginTop = '12px';
+downloadLink.style.color = '#60a5fa';
+resultDiv.appendChild(downloadLink);
+
+// Generate QR code pointing to GitHub Pages hosted page
+const qrDiv = document.createElement('div');
+qrDiv.style.marginTop = '20px';
+resultDiv.appendChild(qrDiv);
+new QRCode(qrDiv, {
+  text: githubPagesUrl,
+  width: 220,
+  height: 220
+});
     });
   </script>
 </body>
