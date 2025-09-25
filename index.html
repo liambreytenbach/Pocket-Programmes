@@ -10,10 +10,12 @@
     h1{margin:0 0 20px 0;font-size:22px}
     .card{background:#182234;border-radius:12px;padding:20px;box-shadow:0 6px 24px rgba(0,0,0,0.6)}
     label{display:block;margin-top:12px;margin-bottom:4px;font-size:14px}
-    input,textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#0b1220;color:#fff}
-    textarea{min-height:60px}
+    input,textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#0b1220;color:#fff; resize:vertical}
+    textarea{min-height:60px; overflow:auto; scrollbar-width:thin; scrollbar-color:#555 #182234;}
+    textarea::-webkit-scrollbar { width: 10px; }
+    textarea::-webkit-scrollbar-track { background: #182234; border-radius:6px;}
+    textarea::-webkit-scrollbar-thumb { background: #555; border-radius:6px;}
     button, a.button-link{
-      margin-top:0;
       padding:10px 20px;
       border:none;
       border-radius:8px;
@@ -24,9 +26,11 @@
       text-decoration:none;
       display:inline-block;
       text-align:center;
+      width:150px;
     }
     #result{margin-top:20px;text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px;}
     .qr-border{background:#fff; display:inline-block; padding:8px; border-radius:12px;}
+    .btn-row{display:flex; justify-content:center; gap:12px; margin-top:12px;}
   </style>
 </head>
 <body>
@@ -48,8 +52,11 @@
       <label>Run Dates</label>
       <input id="rundates" type="text" value="11 September – 6 December 2025" />
 
-      <label>Exact Date and Time</label>
-      <input id="exactDateTime" type="text" placeholder="Enter exact date and time" />
+      <label>Date of Performance</label>
+      <input id="exactDate" type="text" placeholder="Enter exact date" />
+
+      <label>Time of Performance</label>
+      <input id="exactTime" type="text" placeholder="Enter exact time" />
 
       <label>Schedule</label>
       <textarea id="schedule">- Monday to Saturday: 7:30 PM
@@ -117,7 +124,8 @@ Smoking: Smoking on stage</textarea>
         address: document.getElementById('address').value,
         website: document.getElementById('website').value,
         rundates: document.getElementById('rundates').value,
-        exactDateTime: document.getElementById('exactDateTime').value,
+        exactDate: document.getElementById('exactDate').value,
+        exactTime: document.getElementById('exactTime').value,
         schedule: document.getElementById('schedule').value,
         runtime: document.getElementById('runtime').value,
         age: document.getElementById('age').value,
@@ -136,7 +144,7 @@ Smoking: Smoking on stage</textarea>
 <h1>${data.playName} – Theatre Programme</h1><pre>`;
       htmlContent += `============================\nTheatre Programme: ${data.playName}\n============================\n\n`;
       htmlContent += `Venue Details:\n--------------\nTheatre: ${data.theatre}\nAddress: ${data.address}\nWebsite: ${data.website}\n\n`;
-      htmlContent += `Performance Dates:\n------------------\nRun Dates: ${data.rundates}\nExact Date & Time: ${data.exactDateTime}\nSchedule:\n${data.schedule}\nRunning Time: ${data.runtime}\nAge Guidance: ${data.age}\nTicket Prices: ${data.tickets}\nSmoking: ${data.smoking}\n\n`;
+      htmlContent += `Performance Dates:\n------------------\nRun Dates: ${data.rundates}\nDate: ${data.exactDate}\nTime: ${data.exactTime}\nSchedule:\n${data.schedule}\nRunning Time: ${data.runtime}\nAge Guidance: ${data.age}\nTicket Prices: ${data.tickets}\nSmoking: ${data.smoking}\n\n`;
       htmlContent += `About the Play:\n---------------\n${data.about}\n\n`;
       htmlContent += `Cast & Creative Team:\n--------------------\nDirector: ${data.director}\nCast:\n${data.cast}\n\n`;
       htmlContent += `Synopsis:\n---------\n${data.synopsis}\n\n`;
@@ -152,12 +160,20 @@ Smoking: Smoking on stage</textarea>
 
       resultDiv.innerHTML = '';
 
-      const btnContainer = document.createElement('div');
-      btnContainer.style.display = 'flex';
-      btnContainer.style.flexDirection = 'column';
-      btnContainer.style.alignItems = 'center';
-      btnContainer.style.gap = '12px';
-      resultDiv.appendChild(btnContainer);
+      // QR code container
+      const qrDiv = document.createElement('div');
+      qrDiv.className = 'qr-border';
+      resultDiv.appendChild(qrDiv);
+      const qr = new QRCode(qrDiv, {
+        text: githubPagesUrl,
+        width: 220,
+        height: 220
+      });
+
+      // Buttons row
+      const btnRow = document.createElement('div');
+      btnRow.className = 'btn-row';
+      resultDiv.appendChild(btnRow);
 
       // Download Programme Page button
       const downloadLink = document.createElement('a');
@@ -165,19 +181,9 @@ Smoking: Smoking on stage</textarea>
       downloadLink.download = pageFilename;
       downloadLink.textContent = 'Download Programme Page';
       downloadLink.className = 'button-link';
-      btnContainer.appendChild(downloadLink);
+      btnRow.appendChild(downloadLink);
 
-      // QR code container
-      const qrDiv = document.createElement('div');
-      qrDiv.className = 'qr-border';
-      btnContainer.appendChild(qrDiv);
-      const qr = new QRCode(qrDiv, {
-        text: githubPagesUrl,
-        width: 220,
-        height: 220
-      });
-
-      // Download QR code button
+      // Download QR Code button
       const qrDownloadBtn = document.createElement('button');
       qrDownloadBtn.textContent = 'Download QR Code';
       qrDownloadBtn.addEventListener('click', () => {
@@ -189,7 +195,7 @@ Smoking: Smoking on stage</textarea>
           link.click();
         }
       });
-      btnContainer.appendChild(qrDownloadBtn);
+      btnRow.appendChild(qrDownloadBtn);
     });
   </script>
 </body>
