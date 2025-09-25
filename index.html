@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pocket Programme Form</title>
+  <title>Pocket Programmes</title>
   <style>
     body{font-family:Arial, sans-serif; margin:0; min-height:100vh; background:#0f1724; color:#e6eef6}
     .wrap{max-width:800px;margin:28px auto;padding:20px}
@@ -14,13 +14,13 @@
     textarea{min-height:60px}
     button{margin-top:16px;padding:10px 14px;border:none;border-radius:8px;background:#60a5fa;color:#04263b;cursor:pointer;font-weight:bold}
     #result{margin-top:20px;text-align:center}
+    .qr-border{padding:8px;background:#fff;display:inline-block;border-radius:8px;}
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Pocket Programme Form</h1>
     <div class="card">
-      <!-- Play Name Field -->
       <label>Play Name</label>
       <input id="playName" type="text" value="The Weir" />
 
@@ -30,8 +30,6 @@
       <input id="address" type="text" value="6 Panton Street, London, SW1Y 4DN" />
       <label>Website</label>
       <input id="website" type="text" value="https://www.haroldpintertheatre.co.uk/" />
-      <label>Box Office Link</label>
-      <input id="boxoffice" type="text" value="https://www.haroldpintertheatre.co.uk/shows/the-weir" />
       <label>Run Dates</label>
       <input id="rundates" type="text" value="11 September – 6 December 2025" />
       <label>Schedule</label>
@@ -62,13 +60,12 @@ Set in a rural Irish pub, the play unfolds as locals share ghost stories, leadin
 When Valerie, a newcomer, joins them, their tales take a supernatural turn, 
 leading to an unexpected and haunting revelation.</textarea>
       <label>Booking Information</label>
-      <textarea id="booking">Official Box Office: https://www.haroldpintertheatre.co.uk/shows/the-weir
-Ticket Price: From £20
+      <textarea id="booking">Ticket Price: From £20
 Age Guidance: 12+
 Smoking: Smoking on stage</textarea>
-      <label>Additional Resources</label>
-      <textarea id="resources">- British Theatre Guide Review (PDF): https://www.britishtheatreguide.info/reviews/the-weir-harold-pinter-t-24915.pdf
-- Playbill Synopsis: https://playbill.com/production/the-weir-london-harold-pinter-theatre-2025</textarea>
+      <label>Additional Information</label>
+      <textarea id="resources"></textarea>
+
       <button id="generate">Generate Programme Page + QR</button>
     </div>
     <div id="result"></div>
@@ -85,7 +82,6 @@ Smoking: Smoking on stage</textarea>
         theatre: document.getElementById('theatre').value.trim(),
         address: document.getElementById('address').value.trim(),
         website: document.getElementById('website').value.trim(),
-        boxoffice: document.getElementById('boxoffice').value.trim(),
         rundates: document.getElementById('rundates').value.trim(),
         schedule: document.getElementById('schedule').value.trim(),
         runtime: document.getElementById('runtime').value.trim(),
@@ -96,16 +92,13 @@ Smoking: Smoking on stage</textarea>
         director: document.getElementById('director').value.trim(),
         cast: document.getElementById('cast').value.trim(),
         synopsis: document.getElementById('synopsis').value.trim(),
-        booking: document.getElementById('booking').value.trim(),
-        resources: document.getElementById('resources').value.trim()
+        booking: document.getElementById('booking').value.trim()
       };
 
-      // Sanitize filename
       const sanitize = str => str.replace(/[^\w\-]/g, '_');
       const pageFilename = `${sanitize(data.playName)}_${sanitize(data.theatre)}.html`;
       const githubPagesUrl = `https://liambreytenbach.github.io/Pocket-Programmes/programmes/${pageFilename}`;
 
-      // Build HTML content
       let htmlContent = `<!doctype html>
 <html>
 <head>
@@ -125,7 +118,6 @@ Venue Details:
 Theatre: ${data.theatre}
 Address: ${data.address}
 Website: ${data.website}
-Box Office: ${data.boxoffice}
 
 Performance Dates:
 ------------------
@@ -155,14 +147,13 @@ Booking Information:
 -------------------
 ${data.booking}
 
-Additional Resources:
+Additional Information:
 ---------------------
-${data.resources}
 </pre>
 </body>
 </html>`;
 
-      // Create a Blob for download
+      // Blob for download
       const pageBlob = new Blob([htmlContent], { type: 'text/html' });
       const pageUrl = URL.createObjectURL(pageBlob);
 
@@ -179,15 +170,32 @@ ${data.resources}
       downloadLink.style.color = '#60a5fa';
       resultDiv.appendChild(downloadLink);
 
-      // Generate QR code pointing to GitHub Pages URL
+      // Generate QR code
       const qrDiv = document.createElement('div');
+      qrDiv.className = 'qr-border';
       qrDiv.style.marginTop = '20px';
       resultDiv.appendChild(qrDiv);
-      new QRCode(qrDiv, {
+      const qr = new QRCode(qrDiv, {
         text: githubPagesUrl,
         width: 220,
         height: 220
       });
+
+      // QR code download button
+      const qrDownloadBtn = document.createElement('button');
+      qrDownloadBtn.textContent = 'Download QR Code';
+      qrDownloadBtn.style.display = 'block';
+      qrDownloadBtn.style.margin = '12px auto';
+      qrDownloadBtn.addEventListener('click', () => {
+        const qrImg = qrDiv.querySelector('img');
+        if(qrImg){
+          const link = document.createElement('a');
+          link.href = qrImg.src;
+          link.download = `${sanitize(data.playName)}_${sanitize(data.theatre)}_QR.png`;
+          link.click();
+        }
+      });
+      resultDiv.appendChild(qrDownloadBtn);
     });
   </script>
 </body>
