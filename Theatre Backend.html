@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Weir Programme → TXT + QR</title>
+  <style>
+    body{font-family:Arial, sans-serif; margin:0; min-height:100vh; background:#0f1724; color:#e6eef6}
+    .wrap{max-width:800px;margin:28px auto;padding:20px}
+    h1{margin:0 0 20px 0;font-size:22px}
+    .card{background:#182234;border-radius:12px;padding:20px;box-shadow:0 6px 24px rgba(0,0,0,0.6)}
+    label{display:block;margin-top:12px;margin-bottom:4px;font-size:14px}
+    input,textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#0b1220;color:#fff}
+    textarea{min-height:60px}
+    button{margin-top:16px;padding:10px 14px;border:none;border-radius:8px;background:#60a5fa;color:#04263b;cursor:pointer;font-weight:bold}
+    #result{margin-top:20px;text-align:center}
+    #downloadLink{display:inline-block;margin-top:12px;padding:8px 12px;background:#2d3748;color:#e6eef6;border-radius:8px;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>The Weir – Theatre Programme Form</h1>
+    <div class="card">
+      <label>Theatre</label>
+      <input id="theatre" type="text" value="Harold Pinter Theatre" />
+
+      <label>Address</label>
+      <input id="address" type="text" value="6 Panton Street, London, SW1Y 4DN" />
+
+      <label>Website</label>
+      <input id="website" type="text" value="https://www.haroldpintertheatre.co.uk/" />
+
+      <label>Box Office Link</label>
+      <input id="boxoffice" type="text" value="https://www.haroldpintertheatre.co.uk/shows/the-weir" />
+
+      <label>Run Dates</label>
+      <input id="rundates" type="text" value="11 September – 6 December 2025" />
+
+      <label>Schedule</label>
+      <textarea id="schedule">- Monday to Saturday: 7:30 PM
+- Saturday Matinee: 2:30 PM
+- Sunday: Dark</textarea>
+
+      <label>Running Time</label>
+      <input id="runtime" type="text" value="1 hour 45 minutes (no interval)" />
+
+      <label>Age Guidance</label>
+      <input id="age" type="text" value="12+" />
+
+      <label>Ticket Prices</label>
+      <input id="tickets" type="text" value="From £20 (subject to a £3.95 transaction fee)" />
+
+      <label>Smoking</label>
+      <input id="smoking" type="text" value="Smoking on stage" />
+
+      <label>About the Play</label>
+      <textarea id="about">"The Weir" is a modern Irish classic by Conor McPherson, first performed in 1997. 
+Set in a rural Irish pub, the play unfolds as locals share ghost stories, leading to a revelation that changes their lives forever.</textarea>
+
+      <label>Director</label>
+      <input id="director" type="text" value="Conor McPherson" />
+
+      <label>Cast</label>
+      <textarea id="cast">- Brendan Gleeson as Jack
+- Owen McDonnell as Brendan
+- Seán McGinley as Jim
+- Kate Phillips as Valerie
+- Tom Vaughan-Lawlor as Finbar</textarea>
+
+      <label>Synopsis</label>
+      <textarea id="synopsis">On a stormy night in a remote Irish pub, four men gather to share stories. 
+When Valerie, a newcomer, joins them, their tales take a supernatural turn, 
+leading to an unexpected and haunting revelation.</textarea>
+
+      <label>Booking Information</label>
+      <textarea id="booking">Official Box Office: https://www.haroldpintertheatre.co.uk/shows/the-weir
+Ticket Price: From £20
+Age Guidance: 12+
+Smoking: Smoking on stage</textarea>
+
+      <label>Additional Resources</label>
+      <textarea id="resources">- British Theatre Guide Review (PDF): https://www.britishtheatreguide.info/reviews/the-weir-harold-pinter-t-24915.pdf
+- Playbill Synopsis: https://playbill.com/production/the-weir-london-harold-pinter-theatre-2025</textarea>
+
+      <button id="generate">Generate Programme TXT + QR</button>
+    </div>
+    <div id="result"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    const generateBtn = document.getElementById('generate');
+    const resultDiv = document.getElementById('result');
+
+    generateBtn.addEventListener('click', ()=>{
+      const data = {
+        theatre: document.getElementById('theatre').value,
+        address: document.getElementById('address').value,
+        website: document.getElementById('website').value,
+        boxoffice: document.getElementById('boxoffice').value,
+        rundates: document.getElementById('rundates').value,
+        schedule: document.getElementById('schedule').value,
+        runtime: document.getElementById('runtime').value,
+        age: document.getElementById('age').value,
+        tickets: document.getElementById('tickets').value,
+        smoking: document.getElementById('smoking').value,
+        about: document.getElementById('about').value,
+        director: document.getElementById('director').value,
+        cast: document.getElementById('cast').value,
+        synopsis: document.getElementById('synopsis').value,
+        booking: document.getElementById('booking').value,
+        resources: document.getElementById('resources').value
+      };
+
+      // Build text document
+      let textData = "==============================\nTheatre Programme: The Weir\n==============================\n\n";
+      textData += "Venue Details:\n--------------\n";
+      textData += `Theatre: ${data.theatre}\nAddress: ${data.address}\nWebsite: ${data.website}\nBox Office: ${data.boxoffice}\n\n`;
+
+      textData += "Performance Dates:\n------------------\n";
+      textData += `Run Dates: ${data.rundates}\nSchedule:\n${data.schedule}\nRunning Time: ${data.runtime}\nAge Guidance: ${data.age}\nTicket Prices: ${data.tickets}\nSmoking: ${data.smoking}\n\n`;
+
+      textData += "About the Play:\n---------------\n" + data.about + "\n\n";
+
+      textData += "Cast & Creative Team:\n--------------------\nDirector: " + data.director + "\nCast:\n" + data.cast + "\n\n";
+
+      textData += "Synopsis:\n---------\n" + data.synopsis + "\n\n";
+
+      textData += "Booking Information:\n-------------------\n" + data.booking + "\n\n";
+
+      textData += "Additional Resources:\n---------------------\n" + data.resources + "\n";
+
+      // Create blob file
+      const blob = new Blob([textData], {type: 'text/plain'});
+      const url = URL.createObjectURL(blob);
+
+      // Clear previous result
+      resultDiv.innerHTML = '';
+
+      // Add download link
+      const a = document.createElement('a');
+      a.id = 'downloadLink';
+      a.href = url;
+      a.download = 'the-weir-programme.txt';
+      a.textContent = 'Download Programme TXT';
+      resultDiv.appendChild(a);
+
+      // Add QR code
+      const qrDiv = document.createElement('div');
+      qrDiv.style.marginTop = '20px';
+      resultDiv.appendChild(qrDiv);
+      new QRCode(qrDiv, { text: url, width: 220, height: 220 });
+    });
+  </script>
+</body>
+</html>
