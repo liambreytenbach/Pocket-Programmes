@@ -76,7 +76,7 @@ Smoking: Smoking on stage</textarea>
     const generateBtn = document.getElementById('generate');
     const resultDiv = document.getElementById('result');
 
-    generateBtn.addEventListener('click', ()=>{
+    generateBtn.addEventListener('click', () => {
       const data = {
         theatre: document.getElementById('theatre').value,
         address: document.getElementById('address').value,
@@ -97,7 +97,7 @@ Smoking: Smoking on stage</textarea>
       };
 
       // Build HTML content for new page
-      let htmlContent = `<!doctype html><html><head><meta charset=\"utf-8\"><title>The Weir Programme</title><style>body{font-family:Arial,sans-serif;background:#0f1724;color:#e6eef6;padding:20px}h1{font-size:24px}pre{white-space:pre-wrap;word-wrap:break-word}</style></head><body><h1>The Weir – Theatre Programme</h1><pre>`;
+      let htmlContent = `<!doctype html><html><head><meta charset="utf-8"><title>The Weir Programme</title><style>body{font-family:Arial,sans-serif;background:#0f1724;color:#e6eef6;padding:20px}h1{font-size:24px}pre{white-space:pre-wrap;word-wrap:break-word}</style></head><body><h1>The Weir – Theatre Programme</h1><pre>`;
       htmlContent += `==============================\nTheatre Programme: The Weir\n==============================\n\n`;
       htmlContent += `Venue Details:\n--------------\nTheatre: ${data.theatre}\nAddress: ${data.address}\nWebsite: ${data.website}\nBox Office: ${data.boxoffice}\n\n`;
       htmlContent += `Performance Dates:\n------------------\nRun Dates: ${data.rundates}\nSchedule:\n${data.schedule}\nRunning Time: ${data.runtime}\nAge Guidance: ${data.age}\nTicket Prices: ${data.tickets}\nSmoking: ${data.smoking}\n\n`;
@@ -109,27 +109,28 @@ Smoking: Smoking on stage</textarea>
       htmlContent += `</pre></body></html>`;
 
       // Create blob URL for new page
-      const pageBlob = new Blob([htmlContent], {type: 'text/html'});
+      const pageBlob = new Blob([htmlContent], { type: 'text/html' });
       const pageUrl = URL.createObjectURL(pageBlob);
 
-      // Clear previous result
-      resultDiv.innerHTML = '';
+      // Create download link
+      const downloadLink = document.createElement('a');
+      downloadLink.href = pageUrl;
+      downloadLink.download = 'the-weir-programme.html';
+      downloadLink.textContent = 'Download Programme Page';
+      downloadLink.style.display = 'inline-block';
+      downloadLink.style.marginTop = '12px';
+      downloadLink.style.color = '#60a5fa';
+      resultDiv.appendChild(downloadLink);
 
-      // Create QR code linking to new page
+      // Generate QR code linking to GitHub Pages URL
       const qrDiv = document.createElement('div');
       qrDiv.style.marginTop = '20px';
       resultDiv.appendChild(qrDiv);
-      new QRCode(qrDiv, { text: pageUrl, width: 220, height: 220 });
-
-      // Optional: open new page in new tab
-      const openLink = document.createElement('a');
-      openLink.href = pageUrl;
-      openLink.target = '_blank';
-      openLink.textContent = 'Open Programme Page';
-      openLink.style.display = 'inline-block';
-      openLink.style.marginTop = '12px';
-      openLink.style.color = '#60a5fa';
-      resultDiv.appendChild(openLink);
+      new QRCode(qrDiv, {
+        text: 'https://liambreytenbach.github.io/Pocket-Programmes/',
+        width: 220,
+        height: 220
+      });
     });
   </script>
 </body>
